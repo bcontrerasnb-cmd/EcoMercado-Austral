@@ -1,0 +1,146 @@
+﻿@model IEnumerable<Examen_BastianContreras_NicoleAlegria.Models.ReporteCiudadData>
+
+@{
+    ViewBag.Title = "Reporte Geográfico";
+
+    // 1. CALCULAMOS EL TOTAL GLOBAL DE CLIENTES PARA SACAR PORCENTAJES REALES
+    var totalGeneral = Model.Sum(x => x.CantidadClientes);
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+
+            <h2 class="text-success mb-4 text-center fw-bold">
+                <i class="fas fa-chart-bar"></i> Distribución Geográfica de Clientes
+            </h2>
+
+            <div class="card shadow border-0 mb-5">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4">
+                    <h5 class="text-success fw-bold">Visualización Gráfica</h5>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <div style="position: relative; height:40vh; width:100%">
+                        <canvas id="graficoBarras"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow border-0">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Detalle de Participación</h5>
+                    <span class="badge bg-light text-success">Total Clientes: @totalGeneral</span>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover table-striped mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 30%;">Región</th>
+                                <th style="width: 25%;">Comuna</th>
+                                <th class="text-center" style="width: 15%;">Clientes</th>
+                                <th class="text-end" style="width: 30%;">Participación (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                // LÓGICA MATEMÁTICA REAL (Porcentaje del total)
+                                double porcentajeReal = 0;
+                                if (totalGeneral > 0)
+                                {
+                                    porcentajeReal = (double)item.CantidadClientes / totalGeneral * 100;
+                                }
+
+                                // Formateamos para que no tenga muchos decimales (ej: 33.33)
+                                string porcentajeTexto = porcentajeReal.ToString("0.0") + "%";
+
+                                <tr>
+                                    <td class="text-muted small">
+                                        <i class="fas fa-map-marker-alt text-success me-1"></i> @item.Region
+                                    </td>
+                                    <td class="fw-bold text-secondary">@item.NombreCiudad</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success rounded-pill fs-6">@item.CantidadClientes</span>
+                                    </td>
+                                    <td class="text-end pe-3">
+                                        <div class="d-flex align-items-center justify-content-end">
+                                            <small class="me-2 fw-bold text-muted">@porcentajeTexto</small>
+                                            <div class="progress" style="height: 6px; width: 100px;">
+                                                <div class="progress-bar bg-success" role="progressbar" style="width: @porcentajeReal.ToString().Replace(",",".")%;" aria-valuenow="@item.CantidadClientes" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+
+                            @if (!Model.Any())
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center py-5 text-muted">
+                                        <i class="fas fa-chart-area fa-3x mb-3 text-black-50"></i><br />
+                                        <h5>Sin datos suficientes</h5>
+                                        <p>Registra clientes y ciudades para ver el reporte.</p>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer text-muted text-center text-small">
+                    Reporte generado el @DateTime.Now.ToString("dd/MM/yyyy 'a las' HH:mm")
+                </div>
+            </div>
+
+            <div class="text-center mt-5 mb-5">
+                @Html.ActionLink("Volver al Inicio", "Index", "Home", null, new { @class = "btn btn-outline-secondary px-4" })
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var etiquetas = @Html.Raw(Json.Encode(Model.Select(x => x.NombreCiudad)));
+            var valores = @Html.Raw(Json.Encode(Model.Select(x => x.CantidadClientes)));
+            var regiones = @Html.Raw(Json.Encode(Model.Select(x => x.Region)));
+
+            var ctx = document.getElementById('graficoBarras').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: etiquetas,
+                    datasets: [{
+                        label: 'Clientes',
+                        data: valores,
+                        backgroundColor: 'rgba(67, 160, 71, 0.6)',
+                        borderColor: 'rgba(67, 160, 71, 1)',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: function(context) {
+                                    return 'Región: ' + regiones[context.dataIndex];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        });
+    </script>
+}

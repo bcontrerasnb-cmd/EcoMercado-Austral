@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Examen_BastianContreras_NicoleAlegria.Models.Cliente>
+
+@{ ViewBag.Title = "Cartera de Clientes"; }
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-success fw-bold"><i class="fas fa-address-book"></i> Cartera de Clientes</h2>
+    @Html.ActionLink("Nuevo Perfil", "Create", null, new { @class = "btn btn-primary" })
+</div>
+
+<div class="card shadow border-0">
+    <div class="card-body p-0">
+        <table class="table table-hover table-striped mb-0 align-middle">
+            <thead class="table-success">
+                <tr>
+                    <th>Empresa / Cliente</th>
+                    <th>Segmento</th>
+                    <th>Contacto</th>
+                    <th>Cobertura</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-bold">@item.Nombre</div>
+                            <div class="small text-muted">@item.Empresa</div>
+                            <span class="badge bg-light text-dark border">@item.Rut</span>
+                        </td>
+                        <td>
+                            @if (item.Segmento != null)
+                            {
+                                <span class="badge bg-info text-dark">@item.Segmento.Nombre</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Sin Segmento</span>
+                            }
+                        </td>
+                        <td class="small">
+                            <div><i class="fas fa-envelope"></i> @item.Email</div>
+                            <div><i class="fas fa-phone"></i> @item.Telefono</div>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">@item.Ciudades.Count Ubicaciones</span>
+                            <small class="d-block text-muted text-truncate" style="max-width: 150px;">
+                                @string.Join(", ", item.Ciudades.Select(c => c.Nombre))
+                            </small>
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group">
+                                @Html.ActionLink("Editar", "Edit", new { id = item.Id }, new { @class = "btn btn-sm btn-outline-primary" })
+                                @Html.ActionLink("Eliminar", "Delete", new { id = item.Id }, new { @class = "btn btn-sm btn-outline-danger" })
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

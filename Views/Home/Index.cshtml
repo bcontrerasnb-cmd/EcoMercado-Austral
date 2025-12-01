@@ -1,0 +1,71 @@
+﻿@{
+    ViewBag.Title = "Inicio";
+}
+
+<div class="home-content-wrapper p-0" style="background: transparent; box-shadow: none;">
+
+    <section class="text-center py-5">
+        <h1 class="hero-title">
+            Orgánico Y Sustentable
+        </h1>
+        <p class="hero-subtitle">
+            Conectando la pureza de nuestra tierra con tu mesa.
+            Gestión inteligente para un futuro más verde.
+        </p>
+    </section>
+
+    <section class="eco-banner-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6"></div>
+
+                <div class="col-md-6">
+                    <div class="glass-card">
+                        <h2 class="text-success fw-bold mb-3">La Raíz de Nuestro Compromiso</h2>
+                        <p class="text-muted mb-4">
+                            No solo cosechamos alimentos; cultivamos relaciones.
+                            Nuestro sistema ecosustentable asegura la integridad de cada producto desde el origen.
+                        </p>
+                        <a href="@Url.Action("Contacto", "Home")" class="btn btn-success px-4 fw-bold">
+                            Únete a la causa
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5">
+        <h3 class="text-center text-success fw-bold mb-5">Explora nuestra propuesta</h3>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a href="@Url.Action("Index", "Clientes")" class="cta-card">
+                    <div class="cta-card-bg" style="background-image: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="cta-card-overlay">
+                        <h4 class="cta-title">Nuestra<br>Comunidad</h4>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4">
+                <a href="@Url.Action("Index", "SegmentoClientes")" class="cta-card">
+                    <div class="cta-card-bg" style="background-image: url('https://images.unsplash.com/photo-1615485290382-441e4d049cb5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="cta-card-overlay">
+                        <h4 class="cta-title">Segmentos<br>Orgánicos</h4>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4">
+                <a href="@Url.Action("Index", "Reportes")" class="cta-card">
+                    <div class="cta-card-bg" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="cta-card-overlay">
+                        <h4 class="cta-title">Impacto<br>en Cifras</h4>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+</div>

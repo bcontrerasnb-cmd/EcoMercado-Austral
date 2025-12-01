@@ -1,0 +1,70 @@
+﻿@model Examen_BastianContreras_NicoleAlegria.Models.Cliente
+
+@{
+    ViewBag.Title = "Eliminar Cliente";
+}
+
+<h2 class="text-danger mb-4">Eliminar Cliente</h2>
+
+<div class="alert alert-danger shadow-sm">
+    <i class="fas fa-exclamation-triangle"></i>
+    <strong>¿Estás seguro?</strong> Esta acción eliminará el perfil y desvinculará todas sus localidades.
+</div>
+
+<div class="card shadow border-0 mb-4" style="max-width: 600px;">
+    <div class="card-body">
+        <h5 class="card-title text-success">Datos del Cliente</h5>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-4 text-muted">RUT:</dt>
+            <dd class="col-sm-8 fw-bold">@Html.DisplayFor(model => model.Rut)</dd>
+
+            <dt class="col-sm-4 text-muted">Nombre:</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Nombre)</dd>
+
+            <dt class="col-sm-4 text-muted">Empresa:</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Empresa)</dd>
+
+            <dt class="col-sm-4 text-muted">Segmento:</dt>
+            <dd class="col-sm-8">
+                @if (Model.Segmento != null)
+                {
+                    <span class="badge bg-info text-dark">@Model.Segmento.Nombre</span>
+                }
+                else
+                {
+                    <span class="text-muted">Sin asignar</span>
+                }
+            </dd>
+
+            <dt class="col-sm-4 text-muted">Cobertura:</dt>
+            <dd class="col-sm-8">
+                @if (Model.Ciudades.Any())
+                {
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var ciudad in Model.Ciudades)
+                        {
+                            <li><i class="fas fa-map-marker-alt text-success small"></i> @ciudad.Nombre</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <span class="text-muted">Sin localidades registradas</span>
+                }
+            </dd>
+        </dl>
+    </div>
+    <div class="card-footer bg-white border-0 text-end pb-3">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.Id)
+
+            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-outline-secondary me-2" })
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i> Confirmar Eliminación
+            </button>
+        }
+    </div>
+</div>

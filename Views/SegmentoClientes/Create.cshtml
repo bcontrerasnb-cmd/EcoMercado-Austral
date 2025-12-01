@@ -1,0 +1,46 @@
+﻿@model Examen_BastianContreras_NicoleAlegria.Models.SegmentoCliente
+
+@{ ViewBag.Title = "Nuevo Segmento"; }
+
+<h2 class="text-success mb-4">Crear Nuevo Segmento</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow border-0">
+            <div class="card-header bg-success text-white">
+                <i class="fas fa-plus-circle"></i> Datos del Segmento
+            </div>
+            <div class="card-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nombre del Segmento</label>
+                        @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", placeholder = "Ej: Mayorista" } })
+                        @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Descripción</label>
+                        @Html.TextAreaFor(model => model.Descripcion, new { @class = "form-control", rows = "3", placeholder = "Breve detalle del segmento..." })
+                        @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Estado</label>
+                        @Html.DropDownList("Estado", (SelectList)ViewBag.ListaEstados, "Seleccione un estado...", new { @class = "form-select" })
+                        @Html.ValidationMessageFor(model => model.Estado, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <input type="submit" value="Guardar Segmento" class="btn btn-primary" />
+                        @Html.ActionLink("Volver al listado", "Index", null, new { @class = "btn btn-outline-secondary" })
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts { @Scripts.Render("~/bundles/jqueryval") }

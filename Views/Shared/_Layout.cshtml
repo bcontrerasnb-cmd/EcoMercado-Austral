@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - EcoMercado Austral</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" />
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-navbar">
+        <div class="container">
+            @Html.ActionLink("EcoMercado Austral", "Index", "Home", new { area = "" }, new { @class = "navbar-brand fw-bold" })
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menuPrincipal">
+
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", null, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Clientes", "Index", "Clientes", null, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Segmentos", "Index", "SegmentoClientes", null, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Ciudades", "Index", "Ciudades", null, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Distribución Geografica", "Index", "Reportes", null, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Reporte Segmentos", "Segmentos", "Reportes", null, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Contacto", "Contacto", "Home", null, new { @class = "nav-link" })</li>
+                </ul>
+
+                <ul class="navbar-nav ms-auto">
+                    @if (Session["Usuario"] != null)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle user-trigger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle fa-lg me-1"></i>
+                                <span class="fw-bold">@Session["Usuario"]</span>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-end custom-user-menu" aria-labelledby="navbarDropdown">
+                                <li>
+                                    <div class="dropdown-header text-center">
+                                        <div class="user-avatar-circle">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <strong class="d-block mt-2 text-dark">@Session["Usuario"]</strong>
+                                        <small class="text-muted">Administrador</small>
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a href="@Url.Action("Logout", "Acceso")" class="dropdown-item logout-link">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a href="@Url.Action("Login", "Acceso")" class="btn btn-outline-light btn-sm ms-2 px-3 fw-bold rounded-pill">
+                                <i class="fas fa-sign-in-alt me-1"></i> Iniciar Sesión
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @if (TempData["Mensaje"] != null)
+        {
+            <div class="alert alert-@TempData["Tipo"] alert-dismissible fade show mt-3" role="alert">
+                <strong>Aviso:</strong> @TempData["Mensaje"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @RenderBody()
+    </div>
+
+    <footer class="footer mt-auto py-3">
+        <div class="container text-center">
+            <span class="text-muted-footer">© 2025 EcoMercado Austral - Creado por Nicole Alegria y Bastian Contreras.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

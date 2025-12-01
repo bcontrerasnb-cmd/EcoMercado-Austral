@@ -1,0 +1,37 @@
+﻿@model Examen_BastianContreras_NicoleAlegria.Models.SegmentoCliente
+
+@{ ViewBag.Title = "Eliminar Segmento"; }
+
+<h2 class="text-danger mb-4">Eliminar Segmento</h2>
+
+<div class="alert alert-danger shadow-sm">
+    <i class="fas fa-exclamation-triangle"></i>
+    <strong>Advertencia:</strong> Estás a punto de eliminar un segmento. Esta acción es irreversible.
+</div>
+
+<div class="card shadow border-0 mb-4" style="max-width: 600px;">
+    <div class="card-body">
+        <h5 class="card-title text-success">Detalle del Segmento</h5>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-3 text-muted">Nombre:</dt>
+            <dd class="col-sm-9 fw-bold">@Html.DisplayFor(model => model.Nombre)</dd>
+
+            <dt class="col-sm-3 text-muted">Descripción:</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Descripcion)</dd>
+
+            <dt class="col-sm-3 text-muted">Estado:</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Estado)</dd>
+        </dl>
+    </div>
+    <div class="card-footer bg-white border-0 text-end pb-3">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-outline-secondary me-2" })
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i> Confirmar Eliminación
+            </button>
+        }
+    </div>
+</div>

@@ -1,0 +1,112 @@
+﻿@model Examen_BastianContreras_NicoleAlegria.Models.Ciudad
+
+@{ ViewBag.Title = "Nueva Ciudad"; }
+
+<h2 class="text-success mb-4">Registrar Ubicación</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow border-0">
+            <div class="card-header bg-success text-white">
+                <i class="fas fa-map-marked-alt"></i> Selector Geográfico
+            </div>
+            <div class="card-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Región</label>
+                        @Html.DropDownListFor(model => model.Region, (SelectList)ViewBag.ListaRegiones, "Seleccione Región...", new { @class = "form-select", @id = "ddlRegion" })
+                        @Html.ValidationMessageFor(model => model.Region, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Provincia</label>
+                        <select id="ddlProvincia" name="Provincia" class="form-select" disabled>
+                            <option value="">Seleccione Región primero...</option>
+                        </select>
+                        @Html.ValidationMessageFor(model => model.Provincia, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Comuna</label>
+                        <select id="ddlComuna" name="Nombre" class="form-select" disabled>
+                            <option value="">Seleccione Provincia primero...</option>
+                        </select>
+                        @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <input type="submit" value="Guardar Ciudad" class="btn btn-primary" />
+                        @Html.ActionLink("Volver", "Index", null, new { @class = "btn btn-outline-secondary" })
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function () {
+
+            // --- 1. CAMBIO DE REGIÓN ---
+            $("#ddlRegion").change(function () {
+                var regionSeleccionada = $(this).val();
+                console.log("Región seleccionada: " + regionSeleccionada); 
+
+                // Limpiar desplegables hijos
+                $("#ddlProvincia").empty().append('<option value="">Cargando...</option>').prop('disabled', true);
+                $("#ddlComuna").empty().append('<option value="">Seleccione Provincia primero...</option>').prop('disabled', true);
+
+                if (regionSeleccionada) {
+                    
+                    var url = '@Url.Action("ObtenerProvincias", "Ciudades")';
+
+                    $.getJSON(url, { region: regionSeleccionada }, function (data) {
+                        console.log("Provincias recibidas:", data); 
+
+                        var items = '<option value="">Seleccione Provincia...</option>';
+                        $.each(data, function (i, provincia) {
+                            items += "<option value='" + provincia + "'>" + provincia + "</option>";
+                        });
+                        $("#ddlProvincia").html(items).prop('disabled', false);
+                    }).fail(function() {
+                        console.error("Error al llamar al servidor.");
+                        $("#ddlProvincia").html('<option value="">Error al cargar</option>');
+                    });
+                } else {
+                    $("#ddlProvincia").html('<option value="">Seleccione Región primero...</option>');
+                }
+            });
+
+            // --- 2. CAMBIO DE PROVINCIA ---
+            $("#ddlProvincia").change(function () {
+                var region = $("#ddlRegion").val();
+                var provincia = $(this).val();
+                console.log("Provincia seleccionada: " + provincia); 
+
+                $("#ddlComuna").empty().append('<option value="">Cargando...</option>').prop('disabled', true);
+
+                if (provincia) {
+                    var url = '@Url.Action("ObtenerComunas", "Ciudades")';
+
+                    $.getJSON(url, { region: region, provincia: provincia }, function (data) {
+                        console.log("Comunas recibidas:", data); 
+
+                        var items = '<option value="">Seleccione Comuna...</option>';
+                        $.each(data, function (i, comuna) {
+                            items += "<option value='" + comuna + "'>" + comuna + "</option>";
+                        });
+                        $("#ddlComuna").html(items).prop('disabled', false);
+                    });
+                } else {
+                    $("#ddlComuna").html('<option value="">Seleccione Provincia primero...</option>');
+                }
+            });
+        });
+    </script>
+}

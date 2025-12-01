@@ -1,0 +1,27 @@
+﻿@model Examen_BastianContreras_NicoleAlegria.Models.Ciudad
+
+@{ ViewBag.Title = "Eliminar Ciudad"; }
+
+<h2 class="text-danger mb-4">Eliminar Ciudad</h2>
+
+<div class="card shadow border-0" style="max-width: 500px;">
+    <div class="card-header bg-danger text-white">
+        <i class="fas fa-trash"></i> ¿Confirmar eliminación?
+    </div>
+    <div class="card-body">
+        <h4 class="card-title text-center mb-3">@Html.DisplayFor(model => model.Nombre)</h4>
+
+        <p class="card-text text-muted text-center alert alert-warning">
+            <i class="fas fa-exclamation-circle"></i> Si eliminas esta ciudad, los clientes asignados podrían quedar sin ciudad válida.
+        </p>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-danger btn-lg">Eliminar Definitivamente</button>
+                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-outline-secondary" })
+            </div>
+        }
+    </div>
+</div>

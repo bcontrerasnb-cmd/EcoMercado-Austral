@@ -1,0 +1,160 @@
+﻿@model IEnumerable<Examen_BastianContreras_NicoleAlegria.Models.ReporteSegmentoData>
+
+@{ ViewBag.Title = "Segmentación de Clientes"; }
+
+<div class="container pb-5">
+    <h2 class="text-success text-center fw-bold mb-4">
+        <i class="fas fa-chart-pie"></i> Reporte de Segmentación
+    </h2>
+
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card shadow border-0 h-100">
+                <div class="card-header bg-white fw-bold text-center">Panorama Global (Nacional)</div>
+                <div class="card-body">
+                    <div style="position: relative; height:300px; width:100%">
+                        <canvas id="chartGlobal"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="card shadow border-0 h-100">
+                <div class="card-header bg-success text-white fw-bold">
+                    <i class="fas fa-filter"></i> Análisis Local
+                </div>
+                <div class="card-body">
+                    <div class="row g-2 mb-4">
+                        <div class="col-md-4">
+                            <label class="small text-muted">Región</label>
+                            @Html.DropDownList("ddlRegion", (SelectList)ViewBag.ListaRegiones, "Seleccione...", new { @class = "form-select form-select-sm" })
+                        </div>
+                        <div class="col-md-4">
+                            <label class="small text-muted">Provincia</label>
+                            <select id="ddlProvincia" class="form-select form-select-sm" disabled></select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="small text-muted">Comuna</label>
+                            <select id="ddlComuna" class="form-select form-select-sm" disabled></select>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div id="panelResultados" class="text-center text-muted py-4">
+                        <i class="fas fa-map-marked-alt fa-3x mb-3"></i>
+                        <p>Selecciona una comuna para ver la distribución de segmentos.</p>
+                    </div>
+
+                    <div id="tablaDinamica" style="display:none;">
+                        <h5 class="text-success fw-bold mb-3" id="tituloLocal">Resultados</h5>
+                        <div id="contenidoBarras"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            // --- 1. DIBUJAR GRÁFICO GLOBAL (TORTA) ---
+            var etiquetas = @Html.Raw(Json.Encode(Model.Select(x => x.Segmento)));
+            var valores = @Html.Raw(Json.Encode(Model.Select(x => x.Cantidad)));
+
+            var ctx = document.getElementById('chartGlobal').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: etiquetas,
+                    datasets: [{
+                        data: valores,
+                        backgroundColor: ['#2E7D32', '#43A047', '#66BB6A', '#81C784', '#A5D6A7'], // Tonos de verde
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // --- 2. LÓGICA DE CASCADA ---
+            // Región -> Provincia
+            $("#ddlRegion").change(function () {
+                var region = $(this).val();
+                $("#ddlProvincia").empty().prop('disabled', true);
+                $("#ddlComuna").empty().prop('disabled', true);
+                $("#tablaDinamica").hide();
+                $("#panelResultados").show();
+
+                if (region) {
+                    $.getJSON("/Ciudades/ObtenerProvincias", { region: region }, function (data) {
+                        var items = '<option value="">Seleccione...</option>';
+                        $.each(data, function (i, p) { items += "<option value='" + p + "'>" + p + "</option>"; });
+                        $("#ddlProvincia").html(items).prop('disabled', false);
+                    });
+                }
+            });
+
+            // Provincia -> Comuna
+            $("#ddlProvincia").change(function () {
+                var region = $("#ddlRegion").val();
+                var provincia = $(this).val();
+                $("#ddlComuna").empty().prop('disabled', true);
+
+                if (provincia) {
+                    $.getJSON("/Ciudades/ObtenerComunas", { region: region, provincia: provincia }, function (data) {
+                        var items = '<option value="">Seleccione...</option>';
+                        $.each(data, function (i, c) { items += "<option value='" + c + "'>" + c + "</option>"; });
+                        $("#ddlComuna").html(items).prop('disabled', false);
+                    });
+                }
+            });
+
+            // --- 3. LÓGICA DE REPORTE LOCAL ---
+            $("#ddlComuna").change(function () {
+                var comuna = $(this).val();
+
+                if (comuna) {
+                    $("#panelResultados").hide();
+                    $("#tablaDinamica").show();
+                    $("#tituloLocal").text("Distribución en " + comuna);
+                    $("#contenidoBarras").html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando datos...</div>');
+
+                    // Llamada AJAX al nuevo método
+                    $.getJSON("/Reportes/ObtenerDatosSegmentoLocal", { nombreCiudad: comuna }, function (data) {
+                        var html = "";
+
+                        if (data.length === 0) {
+                            html = '<div class="alert alert-warning">No hay clientes registrados en esta comuna.</div>';
+                        } else {
+                            // Construimos barras de progreso manualmente con los datos
+                            $.each(data, function (i, item) {
+                                html += '<div class="mb-3">';
+                                html += '<div class="d-flex justify-content-between small fw-bold">';
+                                html += '<span>' + item.Segmento + ' (' + item.Cantidad + ')</span>';
+                                html += '<span>' + item.Porcentaje + '%</span>';
+                                html += '</div>';
+                                html += '<div class="progress" style="height: 10px;">';
+                                html += '<div class="progress-bar bg-success" style="width: ' + item.Porcentaje.replace(',','.') + '%"></div>';
+                                html += '</div>';
+                                html += '</div>';
+                            });
+                        }
+                        $("#contenidoBarras").html(html);
+                    });
+                }
+            });
+
+        });
+    </script>
+}

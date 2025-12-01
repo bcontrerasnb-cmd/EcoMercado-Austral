@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "Contacto";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg border-0">
+            <div class="row g-0">
+                <div class="col-md-5 bg-success text-white p-4 d-flex flex-column justify-content-center">
+                    <h3 class="fw-bold mb-4">Información de Contacto</h3>
+                    <p class="mb-4">Estamos aquí para resolver tus dudas sobre nuestros productos orgánicos.</p>
+
+                    <div class="mb-3">
+                        <i class="fas fa-map-marker-alt fa-lg me-2"></i>
+                        <span>Calle Guadantún #147, Linares</span>
+                    </div>
+                    <div class="mb-3">
+                        <i class="fas fa-phone fa-lg me-2"></i>
+                        <span>+56 9 66750104</span>
+                    </div>
+                    <div class="mb-3">
+                        <i class="fas fa-envelope fa-lg me-2"></i>
+                        <span>contacto@ecomercado.cl</span>
+                    </div>
+
+                    <div class="mt-auto pt-4">
+                        <small class="text-white-50">Síguenos en redes sociales</small>
+                        <div class="mt-2">
+                            <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                            <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                            <a href="#" class="text-white"><i class="fab fa-twitter fa-lg"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-7 p-4 bg-white">
+                    <h3 class="text-success fw-bold mb-4">Envíanos un mensaje</h3>
+
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label text-muted">Nombre Completo</label>
+                            <input type="text" class="form-control" placeholder="Tu nombre" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-muted">Correo Electrónico</label>
+                            <input type="email" class="form-control" placeholder="nombre@correo.com" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-muted">Asunto</label>
+                            <select class="form-select">
+                                <option>Consulta General</option>
+                                <option>Soporte Clientes</option>
+                                <option>Ventas</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-muted">Mensaje</label>
+                            <textarea class="form-control" rows="4" placeholder="¿En qué podemos ayudarte?" required></textarea>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary" onclick="alert('Gracias por contactarnos. Te responderemos pronto.'); return false;">
+                                <i class="fas fa-paper-plane"></i> Enviar Mensaje
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
